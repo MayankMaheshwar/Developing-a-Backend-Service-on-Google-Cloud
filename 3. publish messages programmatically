@@ -1,0 +1,98 @@
+quiz/gcp/pubsub.py
+# TODO: Load the Cloud Pub/Sub module
+
+from google.cloud import pubsub_v1
+
+# END TODO
+# TODO: Create a Pub/Sub Publisher Client
+
+publisher = pubsub_v1.PublisherClient()
+
+# END TODO
+
+# TODO: Create Topic Object to reference feedback topic
+
+topic_path = publisher.topic_path(project_id, 'feedback')
+
+# END TODO
+Write code to publish a message to Cloud Pub/Sub
+In the publish_feedback(feedback) function, publish a message to the feedback topic.
+
+quiz/gcp/pubsub.py
+"""
+Publishes feedback info
+- jsonify feedback object
+- encode as bytestring
+- publish message
+- return result
+"""
+def publish_feedback(feedback):
+
+# TODO: Publish the feedback object to the feedback topic
+
+    payload = json.dumps(feedback, indent=2,
+                                      sort_keys=True)
+    data = payload.encode('utf-8')
+    future = publisher.publish(topic_path, data=data)
+    return future.result()
+
+# END TODO
+Save the file.
+
+Write code to use the Pub/Sub publish functionality
+In the .../quiz/api/api.py file, load the pubsub module from the quiz.gcp package.
+
+quiz/api/api.py
+# TODO: Add pubsub to import list
+
+from quiz.gcp import datastore, pubsub
+
+# END TODO
+In the publish_feedback(...) function, remove the placeholder pass statement.
+
+Invoke the pubsub.publish_feedback(feedback) function.
+
+Then, return a response to the client indicating that feedback was received.
+
+quiz/api/api.py, publish_feedback(...) function
+"""
+Publish feedback
+- Call pubsub helper
+- Compose and return response
+"""
+def publish_feedback(feedback):
+    # TODO: Publish the feedback using your pubsub module,
+    # return the result
+
+    result = pubsub.publish_feedback(feedback)
+    response = Response(json.dumps(
+                        result, indent=2, sort_keys=True))
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+    # END TODO
+Save the file.
+
+
+Run the application and create a Pub/Sub message
+In the first Cloud Shell window, restart the web application (if it is running, stop and start it).
+
+Preview the web application.
+
+Click Take Test.
+
+Click Places.
+
+Answer the question, select the rating, enter some feedback text, and click Send Feedback.
+
+In the second Cloud Shell window, to pull a message from the worker-subscription, execute the following command:
+
+gcloud pubsub subscriptions pull worker-subscription --auto-ack
+Output:
+
+worker-auto-ack.png
+
+Stop the web and console applications.
+
+
+

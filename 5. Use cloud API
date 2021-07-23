@@ -1,0 +1,132 @@
+Write code to invoke the Cloud Natural Language API
+The code you add performs these actions:
+
+In the editor, move to the top of the ...quiz/gcp/languageapi.py file.
+
+Load the language module from the google.cloud package.
+
+Load the enums and types modules from the google.cloud.language package.
+
+Create a Cloud Natural Language client object.
+
+Move to the analyze(...) function, and create a Document object to pass to the Natural Language client.
+
+Configure this object with two properties: content and type.
+
+Assign the feedback text to this object's content property.
+
+Set the type property value to the type that corresponds to PLAIN_TEXT.
+
+Use the Natural Language client object to analyze the sentiment of the document.
+
+Then, return the sentiment score from the Natural Language API.
+
+quiz/gcp/languageapi.py
+# TODO: Import the language module
+
+from google.cloud import language_v1
+
+# END TODO
+
+# TODO: Create the Language API client
+
+lang_client = language_v1.LanguageServiceClient()
+
+# END TODO
+
+def analyze(text):
+
+    # TODO: Create a Document object
+
+    doc = language_v1.types.Document(content=text,
+                    type_='PLAIN_TEXT')
+
+    # END TODO
+
+    # TODO: Analyze the sentiment
+
+    sentiment = lang_client.analyze_sentiment(
+                    document=doc).document_sentiment
+
+    # END TODO
+
+    # TODO: Return the sentiment score
+
+    return sentiment.score
+
+    # END TODO
+Save the file.
+
+Write code to use the Natural Language API functionality
+In the .../quiz/console/worker.py file, load the languageapi module.
+
+In the pubsub_callback(message) function, and after the existing code, perform sentiment detection on the feedback.
+
+Then, log the score to the console.
+
+Assign a new score property to the feedback object.
+
+Return the message data.
+
+console/worker.py
+# TODO: Load the pubsub, languageapi and spanner modules from
+# from the quiz.gcp package
+
+from quiz.gcp import pubsub, languageapi
+
+# END TODO
+def pubsub_callback(message):
+
+    # TODO: Acknowledge the message
+
+    message.ack()
+
+    # END TODO
+
+    log.info('Message received')
+
+    # TODO: Log the message
+
+    log.info(message)
+
+    # END TODO
+
+    data = json.loads(message.data)
+
+    # TODO: Use the languageapi module to
+    # analyze the sentiment
+
+    score = languageapi.analyze(str(data['feedback']))
+
+    # END TODO
+
+    # TODO: Log the sentiment score
+
+    log.info('Score: {}'.format(score))
+
+    # END TODO
+
+    # TODO: Assign the sentiment score to
+    # a new score property
+
+    data['score'] = score
+
+    # END TODO
+Save the file.
+
+Run the web and worker application and test the Natural Language API
+Return to the first Cloud Shell window.
+Run the web application.
+Switch to the second Cloud Shell window.
+Restart the worker application.
+Preview the web application.
+Click Take Test.
+Click Places.
+Answer the questions, select the rating, enter some feedback text, and then click Send Feedback.
+Return to the second Cloud Shell window.
+You should see that the worker application has invoked the Cloud Natural Language API and displayed the sentiment score in the console.
+
+sentiment-score.png
+
+Stop the web and console applications.
+

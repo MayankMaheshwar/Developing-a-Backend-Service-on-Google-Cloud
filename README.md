@@ -4,9 +4,11 @@ Google App Engine lets you manage resources from the command line, debug source 
 
 Objectives
 
-Create and publish messages to a Cloud Pub/Sub topic.
+Create and publish messages to a Cloud Pub/Sub topic. 
 
 Subscribe to the topic to receive messages in a separate worker application.
+
+(feedback from users)
 
 Use the Cloud Natural Language Machine Learning API.
 

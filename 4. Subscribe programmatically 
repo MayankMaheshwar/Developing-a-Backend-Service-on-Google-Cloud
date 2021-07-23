@@ -1,0 +1,107 @@
+Write code to create a Cloud Pub/Sub subscription and receive messages
+The code you add performs these actions:
+
+Return to the ...quiz/gcp/pubsub.py file.
+
+Declare a Cloud Pub/Sub Subscriber Client.
+
+Get the fully qualified path referencing the 'worker-subscription'.
+
+Move to the pull_feedback(callback) function, and remove the placeholder pass statement.
+
+Use the subscriber client to subscribe to the worker subscription, invoking the callback when a message is received.
+
+/quiz/gcp/pubsub.py
+
+# TODO: Create a Pub/Sub Subscriber Client
+
+sub_client = pubsub_v1.SubscriberClient()
+
+# END TODO
+# TODO: Create a Subscription object named
+# worker-subscription
+
+sub_path = sub_client.subscription_path(project_id, 'worker-subscription')
+
+# END TODO
+def pull_feedback(callback):
+    # TODO: Subscribe to the worker-subscription,
+    # invoking the callback
+
+    sub_client.subscribe(sub_path, callback=callback)
+
+    # END TODO
+Save the file.
+
+Write code to use the Pub/Sub subscribe functionality
+The code you add performs these actions:
+
+In the ...quiz/console/worker.py file, load the pubsub module from the quiz.gcp package.
+
+In the pubsub_callback(message) function, acknowledge the message
+
+Log the message to the console.
+
+In the main() function, register the handler function as the Pub/Sub subscription callback.
+
+console/worker.py
+# TODO: Load the pubsub, languageapi and spanner modules from
+# from the quiz.gcp package
+
+from quiz.gcp import pubsub
+
+# END TODO
+def pubsub_callback(message):
+    # TODO: Acknowledge the message
+
+    message.ack()
+
+    # END TODO
+
+    log.info('Message received')
+
+    # TODO: Log the message
+
+    log.info(message)
+
+    # END TODO
+def main():
+    log.info('Worker starting...')
+
+    # TODO: Register the callback
+
+    pubsub.pull_feedback(pubsub_callback)
+
+    # END TODO
+
+    while True:
+        time.sleep(60)
+Save the file.
+
+Run the web and worker application and create a Pub/Sub message
+In the first Cloud Shell window, start the web application if it's not already running.
+
+python run_server.py
+In the second Cloud Shell window, start the worker application.
+
+. run_worker.sh
+In Cloud Shell, click Web preview > Preview on port 8080 to preview the quiz application.
+
+Click Take Test.
+
+Click Places.
+
+Answer the question, select the rating, enter some feedback text, and then click Send Feedback.
+
+Return to the second Cloud Shell window.
+
+The worker application should show that it has received the feedback message via its handler and displayed details it in the window. The message itself is truncated.
+
+INFO:root:Worker starting...
+INFO:root:Message received
+INFO:root:Message {
+ data: b'{\n  "email": "app.dev.student@example.org",\n  "fee...'
+ ordering_key: ''
+ attributes: {}
+}
+Stop the web and console applications.

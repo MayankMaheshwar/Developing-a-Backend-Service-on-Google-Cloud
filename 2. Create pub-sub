@@ -1,0 +1,13 @@
+create topic feedback
+
+Create a Cloud Pub/Sub subscription named worker-subscription against the feedback topic:
+gcloud pubsub subscriptions create worker-subscription --topic feedback
+
+
+publish messages
+gcloud pubsub topics publish feedback --message "Hello World"
+
+retrieve messages
+gcloud beta pubsub subscriptions pull worker-subscription --auto-ack
+
+
